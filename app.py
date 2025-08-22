@@ -5,7 +5,7 @@ import plotly.express as px
 
 data = pd.read_csv('munis.csv')
 
-st.title("mi primer app")
+st.title("Mi primer app")
 
 munis = data ['entidad'].unique().tolist()
 
@@ -14,7 +14,6 @@ mun =st.selectbox('Seleccione un municipio: ', munis)
 filtro = data [data['entidad']==mun]
 
 
-st.dataframe(filtro)
 
 gen = (filtro.groupby('clas_gen')['total_recaudo'].sum())
 
@@ -28,29 +27,24 @@ total_det = det.sum()
 det = (det / total_det).round (3)
 
 
-st.dataframe(gen)# clasificacion general 
+# clasificacion general 
 
-st.dataframe(det)# clasificacion detallada 
+# clasificacion detallada 
 
 
 
 # pie chart
 
-fig, ax = plt.subplots(1, 1, figsize=(10,6))
-ax.pie(gen.values, labels=gen.index)
-
-st.pyplot(fig)
-
-fig, ax = plt.subplots(1, 1, figsize=(10,6))
-ax.pie(det.values, labels=det.index)
-
-st.pyplot(fig) 
-
+fig_gen = px.pie(values=gen.values, 
+                 names=gen.index, 
+                 title=f'Distribución por Clasificación General - {mun}',
+                 height=600)
+st.plotly_chart(fig_gen)
 
 #treemap
 
 fin = (filtro.groupby(['clas_gen','clasificacion_ofpuj'])['total_recaudo'].sum().reset_index())
-st.dataframe(fin)
+
 
 fig = px.treemap(fin, path=[px.Constant('Total'),
                             'clas_gen',
